@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { useUser } from '@clerk/nextjs';
 import { Button } from './ui/button';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, XIcon } from 'lucide-react';
 import { useRef, useState } from "react";
 
 
@@ -15,6 +15,27 @@ function PostForm() {
   const { user } = useUser();
 
 
+  const handlePostAction = async (formData: FormData): Promise<void> => {
+    const formDataCopy = formData;
+    ref.current?.reset();
+
+    const text = formDataCopy.get("postInput") as string;
+
+    if (!text) {
+      throw new Error("You must provide a post input");
+    }
+
+    setPreview(null);
+
+    try {
+      // await createPostAction(formDataCopy);
+    } catch (error) {
+      console.error(`Error creating post: ${error}`);
+
+      // Display toast
+    }
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -24,10 +45,13 @@ function PostForm() {
   return (
     <div className='mb-2'>
 
-      <form
+<form
         ref={ref}
-        action=""
-      >
+        action={(formData) => {
+         handlePostAction(formData);
+          //toast notification
+        }}
+        className="p-3 bg-white rounded-lg border">
         <div className='flex items-center space-x-2'>
           <Avatar>
             <AvatarImage src={user?.imageUrl} />
@@ -76,7 +100,17 @@ function PostForm() {
 
 
           {/* Remove preview button */}
-
+          {preview && (
+            <Button
+              type="button"
+              onClick={() => setPreview(null)}
+              variant="outline"
+              className="ml-2"
+            >
+              <XIcon className="mr-2" size={16} color="currentColor" />
+              Remove image
+            </Button>
+          )}
 
         </div>
 
