@@ -25,7 +25,7 @@ function CommentForm({ postId }: { postId: string }) {
     } catch (error) {
       console.error(`Error creating comment: ${error}`);
 
-      // Display toast
+      // Display toast section
     }
   };
 
